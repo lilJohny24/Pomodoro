@@ -1,0 +1,89 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16
+    restart: always
+    shm_size: 128mb
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: postgres
+      POSTGRES_DB: pomodoro
+    ports:
+      - '5432:5432'
+    networks:
+      - pomodoro-net
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./alembic/versions:/app/alembic/versions
+
+  cache:
+    image: redis:7
+    restart: always
+    ports:
+      - '6379:6379'
+    networks:  # Добавлено
+      - pomodoro-net
+    healthcheck:  # Рекомендуется
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 1s
+      timeout: 3s
+      retries: 30
+
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - '5051:80'
+    networks:
+      - pomodoro-net
+    depends_on:
+      - db
+    links:
+      - db:db  # Добавлено для разрешения имени хоста
+
+
+  migrations:
+    build:
+      context: .
+      dockerfile: Dockerfile.migrations
+    networks:
+      - pomodoro-net
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://postgres:password@db:5432/pomodoro
+    volumes:
+      - ./database:/app/database
+      - ./alembic:/app/alembic
+      - ./alembic/versions:/app/alembic/versions
+      - ./init_data:/docker-entrypoint-initdb.d  #добавил это
+  
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      - pomodoro-net
+    depends_on:
+      - db
+      - migrations
+      - cache
+    environment:
+      DATABASE_URL: postgresql://postgres:password@db:5432/pomodoro
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+  
+      
+
+volumes:
+  postgres_data:
+
+networks:
+  pomodoro-net:
+    driver: bridge
