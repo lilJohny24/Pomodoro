@@ -1,11 +1,13 @@
 import redis
+from settings import Settings
 
 
 def get_redis_connection() -> redis.Redis:
+    settings = Settings()
     return redis.Redis(
-        host='cache', 
-        port=6379, 
-        db=0
+        host=settings.CACHE_HOST, 
+        port=settings.CACHE_PORT, 
+        db=settings.CACHE_DB
         )
 
 
