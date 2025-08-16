@@ -1,14 +1,5 @@
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, declared_attr
-
-class Base(DeclarativeBase):
-    id: any
-    __name__: str
-
-    __allow_unmapped__ = True
-
-    @declared_attr
-    def __tablename__(self) -> str:
-        return self.__name__.lower()
+from sqlalchemy.orm import Mapped, mapped_column
+from database import Base
 
 class TaskSchema(Base):  # Наследуем от Base, а не от DeclarativeBase
     __tablename__ = 'Tasks_table'

@@ -9,5 +9,5 @@ def get_redis_connection() -> redis.Redis:
         port=settings.CACHE_PORT, 
         db=settings.CACHE_DB
         )
-
+    
 
