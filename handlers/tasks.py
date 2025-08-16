@@ -5,7 +5,7 @@ from repository import TaskRepository, TaskCache
 from fixtures import tasks as fixtures_tasks
 from schema.task import TaskSchema
 
-from database.database import get_db_session
+from database.accessor import get_db_session
 from service.task import TaskService
 
 router = APIRouter(prefix='/task', tags=["task"])
@@ -27,7 +27,7 @@ async def get_tasks(
 @router.post(
     "/",
     response_model=TaskSchema,
-    #response_model_exclude_unset=True,
+    #response_model_exclude_unset=True, 
     status_code=status.HTTP_201_CREATED,
     summary="Create a new task",
     description="Adds a new task to the list"
