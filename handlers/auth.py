@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from typing import Annotated
 
-from dependecy import get_auth_service
+from dependency import get_auth_service
 from schema.user import UserLoginSchema, UserCreateSchema
 from service.auth import AuthService
 from exception import UserNotFoundException, UserNotCorrectPasswordException

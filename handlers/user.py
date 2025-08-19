@@ -1,7 +1,7 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends
 
-from dependecy import get_user_service
+from dependency import get_user_service
 from schema import UserLoginSchema, UserCreateSchema
 from service.user import UserService
 

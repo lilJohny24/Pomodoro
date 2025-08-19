@@ -15,3 +15,11 @@ class TaskSchema(BaseModel):
             raise ValueError('name or pomodoro_count must be provided') 
         return self
 
+
+
+
+class TaskCreateSchema(BaseModel):
+    id: int
+    name: str
+    pomodoro_count: int
+    category_id: int 

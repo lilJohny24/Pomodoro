@@ -1,3 +1,4 @@
+from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 from database import Base
 
@@ -8,6 +9,7 @@ class TaskSchema(Base):  # Наследуем от Base, а не от Declarativ
     name: Mapped[str] = mapped_column()
     pomodoro_count: Mapped[int] = mapped_column()
     category_id: Mapped[int] = mapped_column()
+    user_id : Mapped[int] = mapped_column(ForeignKey('UserProfile.id'), nullable=False)
 
 class Category(Base):
     __tablename__ = 'Categories'
@@ -16,3 +18,4 @@ class Category(Base):
     type: Mapped[str] = mapped_column() 
     name: Mapped[str] = mapped_column()
     
+
