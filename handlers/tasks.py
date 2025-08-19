@@ -1,9 +1,10 @@
 from fastapi import APIRouter, status, HTTPException, Depends
 from typing import List, Annotated
-from dependecy import get_tasks_repository, get_tasks_cache_repostiory, get_task_service
+from dependency import get_tasks_repository, get_task_service, get_request_user_id
+from exception import TaskNotFound
 from repository import TaskRepository, TaskCache 
 from fixtures import tasks as fixtures_tasks
-from schema.task import TaskSchema
+from schema import TaskCreateSchema, TaskSchema
 
 from database.accessor import get_db_session
 from service.task import TaskService
@@ -33,11 +34,11 @@ async def get_tasks(
     description="Adds a new task to the list"
 )
 async def create_task(
-    task: TaskSchema,
-    task_repository: Annotated[TaskRepository, Depends(get_tasks_repository)]
+    body: TaskCreateSchema,
+    task_service: Annotated[TaskService, Depends(get_task_service)],
+    user_id: int = Depends(get_request_user_id)
     ):
-    task_id = task_repository.create_task(task)
-    task.id = task_id
+    task = task_service.create_task(body, user_id)
     return task
 
 @router.patch(
@@ -46,8 +47,14 @@ async def create_task(
     summary="Update task name",
     description="Updates the name of a specific task"
 )
-async def patch_task(task_id: int, name: str, task_repository: Annotated[TaskRepository, Depends(get_tasks_repository)], ):
-    return task_repository.update_task_name(task_id, name)
+async def patch_task(task_id: int, name: str, task_service: Annotated[TaskService, Depends(get_task_service)], user_id: int = Depends(get_request_user_id)):
+    try:
+        return task_service.update_task_name(task_id=task_id, name=name, user_id=user_id)
+    except TaskNotFound as e:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail = e.detail
+        )
     
 @router.delete(
     "/{task_id}",
@@ -55,7 +62,13 @@ async def patch_task(task_id: int, name: str, task_repository: Annotated[TaskRep
     summary="Delete a task",
     description="Removes a task from the list"
 )
-async def delete_task(task_id: int, task_repository: Annotated[TaskRepository, Depends(get_tasks_repository)]):
-    task_repository.delete_task(task_id)
-    return {'message': 'task deleted successfully'}
-    
+async def delete_task(task_id: int, task_service: Annotated[TaskService, Depends(get_task_service)], user_id: int = Depends(get_request_user_id)):
+    try:
+        task_service.delete_task(task_id=task_id, user_id=user_id)
+    except TaskNotFound as e:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=e.detail
+        )
+
+     

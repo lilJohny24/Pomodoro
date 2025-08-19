@@ -8,11 +8,10 @@ class UserRepository:
     def __init__(self, db_session: Session):
         self.db_session = db_session  # Не вызываем как функцию!
 
-    def create_user(self, username: str, password: str, access_token: str) -> UserProfile:
+    def create_user(self, username: str, password: str) -> UserProfile:
         stmt = insert(UserProfile).values(
             username=username,
-            password=password,
-            access_token=access_token
+            password=password
         ).returning(UserProfile)
         
         result = self.db_session.execute(stmt)
