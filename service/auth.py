@@ -5,9 +5,10 @@ from typing import Optional
 import datetime as dt
 from datetime import timedelta
 
+from client import GoogleClient, YandexClient
 from exception import TokenExpired, TokenNotCorrect, UserNotFoundException, UserNotCorrectPasswordException
 from repository.user import UserRepository
-from schema.user import UserLoginSchema
+from schema import UserCreateSchema, UserLoginSchema
 from models.user import UserProfile
 from settings import Settings  # Добавлен импорт модели
 
@@ -15,6 +16,42 @@ from settings import Settings  # Добавлен импорт модели
 class AuthService:
     user_repository: UserRepository
     settings: Settings
+    google_client: GoogleClient 
+    yandex_client: YandexClient
+
+    def google_auth(self, code: str):
+        user_data = self.google_client.get_user_info(code=code)
+        if user := self.user_repository.get_user_by_email(email=user_data.email):
+            access_token = self.generate_access_token(user_id=user.id)
+            return UserLoginSchema(user_id=user.id, access_token=access_token)
+        
+        create_user_data = UserCreateSchema(google_access_token=user_data.access_token, email=user_data.email, name=user_data.name)
+        created_user = self.user_repository.create_user(create_user_data)
+        access_token = self.generate_access_token(user_id=created_user.id)
+        return UserLoginSchema(user_id=created_user.id, access_token=access_token)
+    
+
+    def yandex_auth(self, code: str):
+        user_data = self.yandex_client.get_user_info(code=code)
+
+        if user := self.user_repository.get_user_by_email(email=user_data.default_email):
+            access_token = self.generate_access_token(user_id=user.id)
+            return UserLoginSchema(user_id=user.id, access_token=access_token)
+        
+        create_user_data = UserCreateSchema(yandex_access_token=user_data.access_token, email=user_data.default_email, name=user_data.name)
+        created_user = self.user_repository.create_user(create_user_data)
+        access_token = self.generate_access_token(user_id=created_user.id)
+        return UserLoginSchema(user_id=created_user.id, access_token=access_token)
+
+
+    def get_google_redirect_url(self) -> str:
+        return self.settings.google_redirect_url   
+
+    def get_yandex_redirect_url(self) -> str:
+        return self.settings.yandex_redirect_url
+    
+    def get_yandex_auth(self, code: str):
+        pass
 
     def login(self, username: str, password: str) -> UserLoginSchema:
         user = self.user_repository.get_user_by_username(username)
