@@ -5,4 +5,5 @@ fastapi
 uvicorn[standard]
 redis
 python-jose[cryptography]
+requests
 
