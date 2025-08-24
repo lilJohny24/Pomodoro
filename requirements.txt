@@ -1,9 +1,12 @@
 alembic
 sqlalchemy
-psycopg2-binary
+#psycopg2-binary
 fastapi
 uvicorn[standard]
 redis
 python-jose[cryptography]
 requests
+httpx
+asyncpg
+greenlet
 
