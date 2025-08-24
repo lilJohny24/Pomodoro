@@ -11,8 +11,8 @@ class UserService:
     auth_service: 'AuthService'
 
 
-    def create_user(self, username: str, password: str) -> 'UserLoginSchema':
-        user = self.user_repository.create_user(
+    async def create_user(self, username: str, password: str) -> 'UserLoginSchema':
+        user = await self.user_repository.create_user(
             username=username,
             password=password
         )
