@@ -11,7 +11,7 @@ class GoogleClient:
 
 
     async def get_user_info(self, code: str) -> GoogleUserData:
-        access_token = self._get_access_token(code=code)
+        access_token = await self._get_access_token(code=code)
         async with self.async_client() as client:
             user_info = await client.get('https://www.googleapis.com/oauth2/v1/userinfo',
                                      headers={'Authorization': f'Bearer {access_token}'})

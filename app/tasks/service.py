@@ -5,7 +5,7 @@ from app.tasks.schema import TaskCreateSchema, TaskSchema
 
 @dataclass
 class TaskService:
-    task_repository: TaskRepository
+    task_repository: TaskRepository 
     task_cache: TaskCache
 
     async def get_tasks(self) -> list[TaskSchema]:

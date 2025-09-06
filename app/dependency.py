@@ -13,7 +13,7 @@ from app.tasks.service import TaskService
 from app.users.user_profile.service import UserService
 from app.users.auth.service import AuthService
 from app.settings import Settings
-
+    
 
 
 async def get_tasks_repository(db_session: AsyncSession = Depends(get_db_session)) -> TaskRepository:
