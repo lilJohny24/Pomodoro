@@ -64,3 +64,14 @@ async def test_google_auth__success(auth_service: AuthService):
 
 
     assert user.user_id == decoded_user_id
+
+
+async def test_google_auth__fail(auth_service: AuthService):
+    code = 'fake_code'
+
+    user = await auth_service.google_auth(code=code)
+    decoded_user_id = auth_service.get_user_id_from_access_token(access_token=user.access_token)
+
+    assert user.user_id != decoded_user_id
+
+    

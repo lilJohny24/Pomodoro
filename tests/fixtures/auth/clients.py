@@ -65,7 +65,7 @@ def google_user_info_data() -> GoogleUserData:
         access_token=faker.sha256()
     )
 
-
+@pytest.fixture
 def yandex_user_info_data() ->YandexUserData:
     return YandexUserData(
         id = faker.random_init(),

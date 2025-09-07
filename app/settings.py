@@ -20,6 +20,11 @@ class Settings(BaseModel):
     YANDEX_CLIENT_SECRET: str = '3f3366cf7cb645fb94d8eb874ccd365d'
     YANDEX_REDIRECT_URI: str = 'http://localhost:8000/auth/yandex'
     YANDEX_TOKEN_URL: str = 'https://oauth.yandex.ru/token'
+    CELERY_REDIS_URL: str = 'redis://localhost:6379'
+    FROM_EMAIL: str = 'johnvbg2008@gmail.com'
+    SMTP_HOST: str = 'smtp.gmail.com'
+    SMTP_PORT: int = 465
+    SMPT_PASSWORD: str = 'Qazxswedc20080906'
     
 
     @property
