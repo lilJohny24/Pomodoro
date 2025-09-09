@@ -1,13 +1,18 @@
-import sys
-import os
+import asyncio
 
-# Добавляем корневую директорию проекта в PYTHONPATH
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import pytest
 
 pytest_plugins = [
-    'tests.fixtures.auth.auth_service',          # tests/fixtures/auth/auth_service.py
-    'tests.fixtures.auth.clients',               # tests/fixtures/auth/clients.py  
-    'tests.fixtures.users.user_repository',
-    'tests.fixtures.settings',
-    'tests.fixtures.users.user_model'
-]   
+    "tests.fixtures.auth.auth_service",
+    "tests.fixtures.auth.clients",
+    "tests.fixtures.users.user_repository",
+    "tests.fixtures.infrastructure",
+    "tests.fixtures.users.user_model",
+]
+
+
+@pytest.fixture(scope="session")
+def event_loop():
+    loop = asyncio.get_event_loop()
+    yield loop
+    loop.close()
