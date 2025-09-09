@@ -12,8 +12,8 @@ settings = Settings()
 
 
 celery = Celery(__name__)
-celery.conf.broker_url = settings.CELERY_REDIS_URL
-celery.conf.result_backend = settings.CELERY_REDIS_URL
+celery.conf.broker_url = settings.CELERY_BROKER_URL
+celery.conf.result_backend = 'rpc://'
 
 @celery.task(name='send_email_task')
 def send_email_task(subject: str, text: str, to: str):
@@ -35,6 +35,6 @@ def _build_message(subject: str, text: str, to: str) -> MIMEMultipart:
 def _send_email(msg: MIMEMultipart):
     context = ssl.create_default_context()
     server = smtplib.SMTP_SSL(settings.SMTP_HOST, settings.SMTP_PORT, context=context)
-    server.login(settings.FROM_EMAIL, settings.SMPT_PASSWORD)
+    server.login(settings.FROM_EMAIL, settings.SMTP_PASSWORD)
     server.send_message(msg)
     server.quit()  

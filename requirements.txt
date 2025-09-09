@@ -9,4 +9,6 @@ requests
 httpx
 asyncpg
 greenlet
-
+celery==5.3.6
+pytest
+pytest_factoryboy
