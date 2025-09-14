@@ -12,3 +12,4 @@ greenlet
 celery==5.3.6
 pytest
 pytest_factoryboy
+aio_pika
