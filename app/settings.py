@@ -20,13 +20,14 @@ class Settings(BaseModel):
     YANDEX_CLIENT_SECRET: str = '3f3366cf7cb645fb94d8eb874ccd365d'
     YANDEX_REDIRECT_URI: str = 'http://localhost:8000/auth/yandex'
     YANDEX_TOKEN_URL: str = 'https://oauth.yandex.ru/token'
-    AMQP_URL: str = 'amqp://guest:guest@rabbitmq:5672/'
+    BROKER_URL: str = 'kafka:9092'
     FROM_EMAIL: str = 'johnvbg2008@gmail.com'
     SMTP_PORT: int = 465
     SMTP_HOST: str = 'smtp.gmail.com'
     SMTP_PASSWORD: str = 'ftwh pwdj chvy mcwz'
-    
-    
+    EMAIL_TOPIC: str = 'email_topic'
+    EMAIL_CALLBACK_TOPIC: str = 'email_callback_topic'
+      
 
     @property
     def db_url(self):
