@@ -5,6 +5,7 @@ from app.dependency import get_broker_consumer
 from app.tasks.handlers import router as tasks_router
 from app.users.auth.handlers import router as auth_router
 from app.users.user_profile.handlers import router as user_router
+from app.categories.handlers import router as categories_router
 
 
 
@@ -31,3 +32,4 @@ app = FastAPI(lifespan=lifespan)
 app.include_router(tasks_router)
 app.include_router(auth_router)
 app.include_router(user_router)
+app.include_router(categories_router)
