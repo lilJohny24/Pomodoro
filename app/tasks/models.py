@@ -11,10 +11,11 @@ class TaskSchema(Base):  # Наследуем от Base, а не от Declarativ
     category_id: Mapped[int] = mapped_column()
     user_id : Mapped[int] = mapped_column(ForeignKey('UserProfile.id'), nullable=False)
 
-class Category(Base):
-    __tablename__ = 'Categories'
+#class Category(Base):
+   # __tablename__ = 'Categories'
 
-    id: Mapped[int] = mapped_column(primary_key=True)
-    type: Mapped[str] = mapped_column() 
-    name: Mapped[str] = mapped_column()
+   # id: Mapped[int] = mapped_column(primary_key=True)
+  #  type: Mapped[str] = mapped_column() 
+  #  name: Mapped[str] = mapped_column()
+
     

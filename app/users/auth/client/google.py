@@ -7,18 +7,19 @@ from app.settings import Settings
 @dataclass
 class GoogleClient:
     settings: Settings
-    async_client: httpx.AsyncClient
-
+    # Убрать async_client из полей класса
 
     async def get_user_info(self, code: str) -> GoogleUserData:
         access_token = await self._get_access_token(code=code)
-        async with self.async_client() as client:
-            user_info = await client.get('https://www.googleapis.com/oauth2/v1/userinfo',
-                                     headers={'Authorization': f'Bearer {access_token}'})
+        
+        # Создаем новый клиент для каждого запроса
+        async with httpx.AsyncClient() as client:
+            user_info = await client.get(
+                'https://www.googleapis.com/oauth2/v1/userinfo',
+                headers={'Authorization': f'Bearer {access_token}'}
+            )
         
         return GoogleUserData(**user_info.json(), access_token=access_token)
-
-        
 
     async def _get_access_token(self, code: str) -> str:
         data = {
@@ -29,8 +30,10 @@ class GoogleClient:
             'grant_type': 'authorization_code'
         }
     
-        print(f"Request data: {data}")  # ← Логируем что отправляем
-        async with self.async_client() as client:
+        print(f"Request data: {data}")
+        
+        # Создаем новый клиент для каждого запроса
+        async with httpx.AsyncClient() as client:
             response = await client.post(self.settings.GOOGLE_TOKEN_URL, data=data)
     
             print(f"Status: {response.status_code}")
@@ -44,4 +47,3 @@ class GoogleClient:
         except Exception as e:
             print(f"JSON parse error: {e}")
             return {"error": "json_parse_error", "text": response.text}
- 
